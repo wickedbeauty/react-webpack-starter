@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
+import Message from './message';
 
 export default class App extends Component {
 
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.state = {
-      message: 'Hello world'
+      history: [],
+      user: '',
+      input: ''
     };
   }
 
@@ -16,6 +20,8 @@ export default class App extends Component {
 
   componentDidMount() {
     console.log('componentDidMount');
+    var user = prompt('What is your name?')
+    this.setState({user});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,23 +45,54 @@ export default class App extends Component {
     console.log('componentWillUnmount');
   }
 
-  render() {
+  render(){
+
+    let history = this.state.history.map((message, index) => (
+        <Message key={index} {...message} />
+    ));
+
     return (
-      <div id="helloWorld">
+        <div>
+      <ul>{history}</ul>
         <input
           id="input"
           name="message"
           type="text"
           onChange={this.handleChange}
-          value={this.state.message}
+          onKeyDown={this.handleKeyDown}
+          value={this.state.input}
         />
-      <div id="display" style={{color: 'grey', fontSize: 35}}>{this.state.message}</div>
+      <button
+          id="submit"
+          name="submit"
+          type="submit"
+          onClick={this.handleClick}
+          vale = "submit"
+          />
       </div>
     );
   }
 
   handleChange(event) {
-    this.setState({message: event.target.value});
+    this.setState({input: event.target.value});
+  }
+
+  handleKeyDown(event) {
+      if(event.key === 'Enter'){
+          event.preventDefault();
+          if(this.state.input != ''){
+              let time = new Date();
+
+              this.setState({
+                  history: this.state.history.concat({
+                      name: this.state.user,
+                      message: this.state.input,
+                      time: `${time.getHours()}:${time.getMinutes()}`
+                  }),
+                  input: ''
+              });
+          }
+      }
   }
 
 }

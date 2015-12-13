@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import Rebase from 're-base';
 import Message from './Message';
+
+const base = Rebase.createClass(/*firebase url*/);
 
 export default class App extends Component {
 
@@ -20,6 +25,11 @@ export default class App extends Component {
 
     componentDidMount() {
         console.log('componentDidMount');
+        base.syncState(`chatList`, {
+            context: this,
+            state: 'history',
+            asArray: true
+        });
         var user = prompt('What is your name?');
         this.setState({user});
     }
